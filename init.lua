@@ -4,6 +4,13 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Clear on exit
+vim.api.nvim_create_autocmd("VimLeave", {
+  callback = function()
+    os.execute("clear")
+  end,
+})
+
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
