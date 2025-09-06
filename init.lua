@@ -5,9 +5,9 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Clear on exit
-vim.api.nvim_create_autocmd("VimLeave", {
+vim.api.nvim_create_autocmd('VimLeave', {
   callback = function()
-    os.execute("clear")
+    os.execute 'clear'
   end,
 })
 
@@ -89,6 +89,16 @@ vim.o.confirm = true
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+
+vim.keymap.set('n', '<leader>er', function()
+  vim.fn.jobstart { 'open', '-R', vim.fn.expand '%:p' }
+end, { desc = '[E]xplore: [R]eveal file in Finder' })
+
+vim.keymap.set('n', '<leader>eo', function()
+  vim.fn.jobstart { 'open', vim.fn.expand '%:p:h' }
+end, { desc = '[E]xplore: [O]pen parent dir in Finder' })
+
+vim.keymap.set('n', '<leader>e', function() end, { desc = '[E]xplore in Finder', silent = true })
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -890,7 +900,7 @@ require('lazy').setup({
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
       statusline.section_location = function()
-        return '%2l:%-2v'
+        return '%2l:%-2v %P'
       end
 
       -- ... and there is more!
