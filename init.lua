@@ -362,6 +362,19 @@ require('lazy').setup({
       -- Telescope picker. This is really useful to discover what Telescope can
       -- do as well as how to actually do it!
 
+      -- Check for fd and notify if missing
+      if vim.fn.executable('fd') == 0 then
+        vim.defer_fn(function()
+          vim.notify(
+            "fd is not installed. Install it for optimal Telescope file search performance.\n" ..
+            "fd cannot be installed via Mason - use your system package manager.\n" ..
+            "See: https://github.com/sharkdp/fd#installation",
+            vim.log.levels.WARN,
+            { title = "Telescope" }
+          )
+        end, 100)
+      end
+
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
       require('telescope').setup {
@@ -877,7 +890,7 @@ require('lazy').setup({
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
       -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
+      fuzzy = { implementation = 'prefer_rust_with_warning' },
 
       -- Shows a signature help window while you type arguments for a function
       signature = { enabled = true },
