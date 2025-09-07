@@ -100,6 +100,13 @@ end, { desc = '[E]xplore: [O]pen parent dir in Finder' })
 
 vim.keymap.set('n', '<leader>e', function() end, { desc = '[E]xplore in Finder', silent = true })
 
+vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
+
+-- Quick edit init.lua
+vim.keymap.set('n', '<leader>ei', function()
+  vim.cmd('edit ' .. vim.env.MYVIMRC)
+end, { desc = '[E]dit [I]nit.lua' })
+
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -892,6 +899,7 @@ require('lazy').setup({
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
+      
       -- set use_icons to true if you have a Nerd Font
       statusline.setup { use_icons = vim.g.have_nerd_font }
 
@@ -902,6 +910,35 @@ require('lazy').setup({
       statusline.section_location = function()
         return '%2l:%-2v %P'
       end
+
+      -- Add Copilot status to the mode section which is always visible
+      local original_mode = statusline.section_mode
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_mode = function(args)
+        local mode_info = original_mode(args)
+        local copilot_indicator = ''  -- Start with empty string (nothing shown)
+        
+        if vim.fn.exists('*copilot#Enabled') == 1 then
+          -- Copilot plugin is loaded, check if it's enabled
+          local ok, is_enabled = pcall(vim.fn['copilot#Enabled'])
+          if ok and is_enabled == 1 then
+            copilot_indicator = '  ●' -- filled circle for enabled
+          else
+            copilot_indicator = '  ○' -- empty circle for disabled
+          end
+        end
+        -- If plugin not loaded yet, copilot_indicator remains empty string
+        
+        return mode_info .. copilot_indicator
+      end
+
+      -- Refresh statusline when Copilot might have changed state
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'CopilotStatusChanged',
+        callback = function()
+          vim.cmd('redrawstatus')
+        end,
+      })
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -953,7 +990,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
