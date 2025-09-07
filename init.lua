@@ -128,6 +128,9 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
+-- Copy/Paste Tip: Hold Option (⌥) while selecting text to bypass vim/tmux mouse handling
+-- This lets you select and copy text normally on macOS
+
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
@@ -309,6 +312,8 @@ require('lazy').setup({
         { '<C-w>J', desc = '↓ Move Window Down (J)' },
         { '<C-w>K', desc = '↑ Move Window Up (K)' },
         { '<C-w>L', desc = '→ Move Window Right (L)' },
+        -- Copy/paste reminder
+        { '<leader>?', desc = 'Tip: ⌥+drag to copy text (bypasses mouse mode)' },
       },
     },
   },

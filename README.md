@@ -1,259 +1,176 @@
-# kickstart.nvim
+# Neovim + Tmux Development Environment
 
-## Introduction
+This is my personal Neovim configuration built on top of Kickstart.nvim, with seamless tmux integration, clipboard synchronization, and optimized for remote development.
 
-A starting point for Neovim that is:
+## Key Features
 
-* Small
-* Single-file
-* Completely Documented
+- **Seamless Navigation**: Use `<C-hjkl>` to navigate between Neovim splits and tmux panes
+- **Universal Clipboard**: Automatic clipboard sync between local macOS and remote SSH/mosh sessions
+- **Floating Terminals**: Quick access terminals with `<C-\>` without leaving Neovim
+- **Smart Copy/Paste**: Hold `⌥ (Option)` while selecting text to bypass mouse mode
 
-**NOT** a Neovim distribution, but instead a starting point for your configuration.
+## Quick Start
 
-## Installation
+### Prerequisites
 
-### Install Neovim
+```bash
+# macOS
+brew install neovim tmux ripgrep fd
 
-Kickstart.nvim targets *only* the latest
-['stable'](https://github.com/neovim/neovim/releases/tag/stable) and latest
-['nightly'](https://github.com/neovim/neovim/releases/tag/nightly) of Neovim.
-If you are experiencing issues, please make sure you have the latest versions.
+# Clone this config
+git clone <your-repo> ~/config/nvim
 
-### Install External Dependencies
+# Install tmux plugin manager (optional but recommended)
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-External Requirements:
-- Basic utils: `git`, `make`, `unzip`, C Compiler (`gcc`)
-- [ripgrep](https://github.com/BurntSushi/ripgrep#installation),
-  [fd-find](https://github.com/sharkdp/fd#installation)
-- Clipboard tool (xclip/xsel/win32yank or other depending on the platform)
-- A [Nerd Font](https://www.nerdfonts.com/): optional, provides various icons
-  - if you have it set `vim.g.have_nerd_font` in `init.lua` to true
-- Emoji fonts (Ubuntu only, and only if you want emoji!) `sudo apt install fonts-noto-color-emoji`
-- Language Setup:
-  - If you want to write Typescript, you need `npm`
-  - If you want to write Golang, you will need `go`
-  - etc.
-
-> [!NOTE]
-> See [Install Recipes](#Install-Recipes) for additional Windows and Linux specific notes
-> and quick install snippets
-
-### Install Kickstart
-
-> [!NOTE]
-> [Backup](#FAQ) your previous configuration (if any exists)
-
-Neovim's configurations are located under the following paths, depending on your OS:
-
-| OS | PATH |
-| :- | :--- |
-| Linux, MacOS | `$XDG_CONFIG_HOME/nvim`, `~/.config/nvim` |
-| Windows (cmd)| `%localappdata%\nvim\` |
-| Windows (powershell)| `$env:LOCALAPPDATA\nvim\` |
-
-#### Recommended Step
-
-[Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repo
-so that you have your own copy that you can modify, then install by cloning the
-fork to your machine using one of the commands below, depending on your OS.
-
-> [!NOTE]
-> Your fork's URL will be something like this:
-> `https://github.com/<your_github_username>/kickstart.nvim.git`
-
-You likely want to remove `lazy-lock.json` from your fork's `.gitignore` file
-too - it's ignored in the kickstart repo to make maintenance easier, but it's
-[recommended to track it in version control](https://lazy.folke.io/usage/lockfile).
-
-#### Clone kickstart.nvim
-
-> [!NOTE]
-> If following the recommended step above (i.e., forking the repo), replace
-> `nvim-lua` with `<your_github_username>` in the commands below
-
-<details><summary> Linux and Mac </summary>
-
-```sh
-git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim
+# Link tmux config
+ln -s ~/config/tmux/tmux.conf ~/.tmux.conf
 ```
 
-</details>
+### First Launch
 
-<details><summary> Windows </summary>
+1. Start Neovim: `nvim`
+   - Plugins will auto-install via lazy.nvim
+   
+2. Start tmux: `tmux`
+   - Press `Ctrl-a` then `I` to install tmux plugins (if using TPM)
+   - Press `Ctrl-a` then `r` to reload config
 
-If you're using `cmd.exe`:
+3. Use the dev session script for a full layout:
+   ```bash
+   ~/config/tmux/dev-session.sh
+   ```
 
-```
-git clone https://github.com/nvim-lua/kickstart.nvim.git "%localappdata%\nvim"
-```
+## Navigation
 
-If you're using `powershell.exe`
+### Window/Pane Movement
 
-```
-git clone https://github.com/nvim-lua/kickstart.nvim.git "${env:LOCALAPPDATA}\nvim"
-```
+- `<C-h/j/k/l>` - Move between Neovim splits AND tmux panes seamlessly
+- `<C-w>` then `h/j/k/l` - Alternative window navigation in Neovim
+- `<leader>tj` - Toggle hjkl movement reminder
 
-</details>
+### Tmux Prefix Key: `Ctrl-a`
 
-### Post Installation
+- `Ctrl-a |` - Split pane vertically
+- `Ctrl-a -` - Split pane horizontally
+- `Ctrl-a c` - New window
+- `Ctrl-a n/p` - Next/previous window
+- `Ctrl-a [` - Enter copy mode (vim-style navigation)
 
-Start Neovim
+## Copy & Paste
 
-```sh
-nvim
-```
+### In Neovim (Local)
 
-That's it! Lazy will install all the plugins you have. Use `:Lazy` to view
-the current plugin status. Hit `q` to close the window.
+- **Normal Mode**: Regular vim yanks work as expected
+- **Mouse Selection**: Hold `⌥ (Option)` while dragging to bypass mouse mode
+- **Visual Mode**: Select with `v`, copy with `y`
 
-#### Read The Friendly Documentation
+### In SSH/Mosh Sessions
 
-Read through the `init.lua` file in your configuration folder for more
-information about extending and exploring Neovim. That also includes
-examples of adding popularly requested plugins.
+All yanks automatically sync to your local macOS clipboard via OSC52:
 
-> [!NOTE]
-> For more information about a particular plugin check its repository's documentation.
+- `yy` - Copy line to local clipboard
+- `yiw` - Copy word to local clipboard
+- `y$` - Copy to end of line
+- Visual mode + `y` - Copy selection
 
+For explicit OSC52 copy:
+- `<leader>y{motion}` - Copy motion to clipboard
+- `<leader>yy` - Copy current line
 
-### Getting Started
+### In Tmux Copy Mode
 
-[The Only Video You Need to Get Started with Neovim](https://youtu.be/m8C0Cq9Uv9o)
+1. Enter copy mode: `Ctrl-a [`
+2. Navigate with vim keys (hjkl)
+3. `v` to start selection
+4. `y` to copy (automatically syncs to system clipboard)
+5. `q` to exit
 
-### FAQ
+## Terminal Integration
 
-* What should I do if I already have a pre-existing Neovim configuration?
-  * You should back it up and then delete all associated files.
-  * This includes your existing init.lua and the Neovim files in `~/.local`
-    which can be deleted with `rm -rf ~/.local/share/nvim/`
-* Can I keep my existing configuration in parallel to kickstart?
-  * Yes! You can use [NVIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)`=nvim-NAME`
-    to maintain multiple configurations. For example, you can install the kickstart
-    configuration in `~/.config/nvim-kickstart` and create an alias:
-    ```
-    alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
-    ```
-    When you run Neovim using `nvim-kickstart` alias it will use the alternative
-    config directory and the matching local directory
-    `~/.local/share/nvim-kickstart`. You can apply this approach to any Neovim
-    distribution that you would like to try out.
-* What if I want to "uninstall" this configuration:
-  * See [lazy.nvim uninstall](https://lazy.folke.io/usage#-uninstalling) information
-* Why is the kickstart `init.lua` a single file? Wouldn't it make sense to split it into multiple files?
-  * The main purpose of kickstart is to serve as a teaching tool and a reference
-    configuration that someone can easily use to `git clone` as a basis for their own.
-    As you progress in learning Neovim and Lua, you might consider splitting `init.lua`
-    into smaller parts. A fork of kickstart that does this while maintaining the
-    same functionality is available here:
-    * [kickstart-modular.nvim](https://github.com/dam9000/kickstart-modular.nvim)
-  * Discussions on this topic can be found here:
-    * [Restructure the configuration](https://github.com/nvim-lua/kickstart.nvim/issues/218)
-    * [Reorganize init.lua into a multi-file setup](https://github.com/nvim-lua/kickstart.nvim/pull/473)
+### ToggleTerm (within Neovim)
 
-### Install Recipes
+- `<C-\>` - Toggle floating terminal
+- `<leader>tf` - Floating terminal
+- `<leader>th` - Horizontal terminal
+- `<leader>tv` - Vertical terminal
+- `<leader>tg` - Lazygit in floating terminal
+- `<leader>tp` - Python REPL
+- `<leader>tn` - Node REPL
 
-Below you can find OS specific install instructions for Neovim and dependencies.
+### Terminal Navigation
 
-After installing all the dependencies continue with the [Install Kickstart](#Install-Kickstart) step.
+- From terminal mode: `<C-hjkl>` still works to navigate to other panes
+- Exit terminal mode: `<Esc>` or `<C-\><C-n>`
 
-#### Windows Installation
+## File Management
 
-<details><summary>Windows with Microsoft C++ Build Tools and CMake</summary>
-Installation may require installing build tools and updating the run command for `telescope-fzf-native`
+- `-` - Open parent directory in Oil.nvim (file manager)
+- `<leader>sf` - Find files (git-aware)
+- `<leader>sg` - Live grep in project
+- `<leader>sp` - Find ALL files (including ignored)
 
-See `telescope-fzf-native` documentation for [more details](https://github.com/nvim-telescope/telescope-fzf-native.nvim#installation)
+## Development Workflow
 
-This requires:
+### Session Management
 
-- Install CMake and the Microsoft C++ Build Tools on Windows
-
-```lua
-{'nvim-telescope/telescope-fzf-native.nvim', build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-```
-</details>
-<details><summary>Windows with gcc/make using chocolatey</summary>
-Alternatively, one can install gcc and make which don't require changing the config,
-the easiest way is to use choco:
-
-1. install [chocolatey](https://chocolatey.org/install)
-either follow the instructions on the page or use winget,
-run in cmd as **admin**:
-```
-winget install --accept-source-agreements chocolatey.chocolatey
-```
-
-2. install all requirements using choco, exit the previous cmd and
-open a new one so that choco path is set, and run in cmd as **admin**:
-```
-choco install -y neovim git ripgrep wget fd unzip gzip mingw make
-```
-</details>
-<details><summary>WSL (Windows Subsystem for Linux)</summary>
+The included `dev-session.sh` script creates a directory-based tmux layout:
 
 ```
-wsl --install
-wsl
-sudo add-apt-repository ppa:neovim-ppa/unstable -y
-sudo apt update
-sudo apt install make gcc ripgrep unzip git xclip neovim
+┌─────────────┬─────────────┐
+│             │    zsh      │
+│     vim     ├─────────────┤
+│     (50%)   │   claude    │
+└─────────────┴─────────────┘
 ```
-</details>
 
-#### Linux Install
-<details><summary>Ubuntu Install Steps</summary>
+- **Automatic naming**: Each directory gets its own session (e.g., `~/myproject` → session "myproject")
+- **All panes start in the current directory**
+- **Layout**: Vim (left 50%), zsh (top right), Claude Code (bottom right)
 
+### Usage
+
+```bash
+# In ~/projects/myapp
+dev                    # Creates session "myapp"
+
+# In ~/projects/another-app  
+dev                    # Creates session "another-app"
+
+# Override with custom name
+dev work              # Creates session "work" in current dir
 ```
-sudo add-apt-repository ppa:neovim-ppa/unstable -y
-sudo apt update
-sudo apt install make gcc ripgrep unzip git xclip neovim
+
+### Recommended Aliases
+
+Add to your `~/.zshrc`:
+
+```bash
+# Development
+alias dev='~/config/tmux/dev-session.sh'
+
+# Session management
+alias tls='tmux ls'                          # List all sessions
+alias ta='tmux attach -t'                    # Attach to session: ta myproject
+alias tks='tmux kill-session -t'            # Kill session: tks myproject
+alias tka='tmux kill-server'                 # Kill ALL tmux sessions
+
+# Quick project switching
+alias twork='cd ~/work && dev'
+alias tproj='cd ~/projects && dev'
 ```
-</details>
-<details><summary>Debian Install Steps</summary>
 
-```
-sudo apt update
-sudo apt install make gcc ripgrep unzip git xclip curl
+## GitHub Copilot Keybindings
 
-# Now we install nvim
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz
-sudo rm -rf /opt/nvim-linux-x86_64
-sudo mkdir -p /opt/nvim-linux-x86_64
-sudo chmod a+rX /opt/nvim-linux-x86_64
-sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
-
-# make it available in /usr/local/bin, distro installs to /usr/bin
-sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/
-```
-</details>
-<details><summary>Fedora Install Steps</summary>
-
-```
-sudo dnf install -y gcc make git ripgrep fd-find unzip neovim
-```
-</details>
-
-<details><summary>Arch Install Steps</summary>
-
-```
-sudo pacman -S --noconfirm --needed gcc make git ripgrep fd unzip neovim
-```
-</details>
-
-## Custom Keybindings
-
-### GitHub Copilot
-
-This configuration includes custom keybindings for GitHub Copilot to avoid Tab conflicts:
-
-#### Accepting Suggestions
+### Accepting Suggestions
 - `Ctrl+Enter` or `Ctrl+J` - Accept current suggestion (insert mode)
 
-#### Navigation
+### Navigation
 - `Alt+]` - Next suggestion (insert mode)
 - `Alt+[` - Previous suggestion (insert mode)
 - `Ctrl+E` - Dismiss current suggestion (insert mode)
 
-#### Panel & Commands
+### Panel & Commands
 - `<leader>cp` - Open Copilot panel (normal mode)
 - `Ctrl+\` then `Ctrl+P` - Open panel from insert mode
 - `<leader>cs` - Trigger new suggestion
@@ -262,5 +179,75 @@ This configuration includes custom keybindings for GitHub Copilot to avoid Tab c
 - `<leader>cr` - Restart Copilot
 - `<leader>ch` or `<leader>c?` - View Copilot help
 
-For full keybinding reference, use `:help copilot-keybindings` within Neovim.
+## Troubleshooting
 
+### Copy/Paste Not Working in SSH
+
+1. Ensure iTerm2 has "Applications in terminal may access clipboard" enabled
+   - Preferences → General → Selection
+
+2. Check if you're in an SSH session:
+   ```vim
+   :echo $SSH_TTY
+   ```
+
+3. Verify OSC52 is working - you should see a notification when entering Neovim over SSH
+
+### Tmux Navigation Not Working
+
+1. Make sure you're using the linked config:
+   ```bash
+   ls -la ~/.tmux.conf  # Should point to ~/config/tmux/tmux.conf
+   ```
+
+2. Reload tmux config: `Ctrl-a r`
+
+3. Check if vim-tmux-navigator is loaded in Neovim:
+   ```vim
+   :checkhealth
+   ```
+
+### TPM Not Installed Warning
+
+If you see "TPM NOT INSTALLED" in tmux status bar:
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+# Then press Ctrl-a + I inside tmux
+```
+
+## Customization
+
+### Adding Plugins
+
+Create new files in `~/.config/nvim/lua/custom/plugins/`:
+```lua
+-- example.lua
+return {
+  'plugin/name',
+  config = function()
+    -- configuration
+  end,
+}
+```
+
+### Key Mappings
+
+- Leader key is `<Space>`
+- See current mappings: `<leader>sk` (Search Keymaps)
+- Which-key will show available mappings when you press `<leader>`
+
+### Tmux Theme
+
+Edit status bar colors in `~/config/tmux/tmux.conf` (search for "Status bar configuration")
+
+## Tips
+
+1. **Copy Mode Alternative**: If mouse selection is tricky, use vim's visual mode or tmux copy mode
+2. **Performance**: The config uses `fd` for file finding and `ripgrep` for searching - install both for best performance
+3. **Remote Sessions**: Everything is optimized for SSH/mosh - yanks, clipboard, and mouse all work seamlessly
+
+## Credits
+
+- Built on [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
+- Tmux navigation via [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator)
+- OSC52 clipboard via [nvim-osc52](https://github.com/ojroques/nvim-osc52)
