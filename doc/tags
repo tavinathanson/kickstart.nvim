@@ -1,3 +1,11 @@
+copilot-keybindings	copilot-keybindings.txt	/*copilot-keybindings*
+copilot-keybindings-accept	copilot-keybindings.txt	/*copilot-keybindings-accept*
+copilot-keybindings-commands	copilot-keybindings.txt	/*copilot-keybindings-commands*
+copilot-keybindings-contents	copilot-keybindings.txt	/*copilot-keybindings-contents*
+copilot-keybindings-navigate	copilot-keybindings.txt	/*copilot-keybindings-navigate*
+copilot-keybindings-overview	copilot-keybindings.txt	/*copilot-keybindings-overview*
+copilot-keybindings-panel	copilot-keybindings.txt	/*copilot-keybindings-panel*
+copilot-keybindings.txt	copilot-keybindings.txt	/*copilot-keybindings.txt*
 kickstart-is	kickstart.txt	/*kickstart-is*
 kickstart-is-not	kickstart.txt	/*kickstart-is-not*
 kickstart.nvim	kickstart.txt	/*kickstart.nvim*

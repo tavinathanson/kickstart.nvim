@@ -55,6 +55,4 @@ Normal mode:
     <leader>ce  Enable Copilot
     <leader>cr  Restart Copilot
 
-Quick reference from vim: :help copilot-keybindings
-
-vim:tw=78:ts=8:ft=help:norl:
+To view this help again, use the command `:help copilot-keybindings`
