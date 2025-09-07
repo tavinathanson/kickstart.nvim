@@ -239,3 +239,28 @@ sudo pacman -S --noconfirm --needed gcc make git ripgrep fd unzip neovim
 ```
 </details>
 
+## Custom Keybindings
+
+### GitHub Copilot
+
+This configuration includes custom keybindings for GitHub Copilot to avoid Tab conflicts:
+
+#### Accepting Suggestions
+- `Ctrl+Enter` or `Ctrl+J` - Accept current suggestion (insert mode)
+
+#### Navigation
+- `Alt+]` - Next suggestion (insert mode)
+- `Alt+[` - Previous suggestion (insert mode)
+- `Ctrl+E` - Dismiss current suggestion (insert mode)
+
+#### Panel & Commands
+- `<leader>cp` - Open Copilot panel (normal mode)
+- `Ctrl+\` then `Ctrl+P` - Open panel from insert mode
+- `<leader>cs` - Trigger new suggestion
+- `<leader>cd` - Disable Copilot
+- `<leader>ce` - Enable Copilot
+- `<leader>cr` - Restart Copilot
+- `<leader>ch` or `<leader>c?` - View Copilot help
+
+For full keybinding reference, use `:help copilot-keybindings` within Neovim.
+

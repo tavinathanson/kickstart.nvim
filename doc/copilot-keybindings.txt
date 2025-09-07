@@ -1,0 +1,60 @@
+*copilot-keybindings.txt*  GitHub Copilot keybinding reference
+
+COPILOT KEYBINDINGS REFERENCE                           *copilot-keybindings*
+
+==============================================================================
+CONTENTS                                        *copilot-keybindings-contents*
+
+    1. Overview                          |copilot-keybindings-overview|
+    2. Accepting Suggestions             |copilot-keybindings-accept|
+    3. Navigation                        |copilot-keybindings-navigate|
+    4. Panel Access                      |copilot-keybindings-panel|
+    5. Commands                          |copilot-keybindings-commands|
+
+==============================================================================
+1. OVERVIEW                                     *copilot-keybindings-overview*
+
+This configuration uses custom keybindings to avoid conflicts with Tab
+completion and provide easy access to Copilot features from both insert and
+normal modes.
+
+==============================================================================
+2. ACCEPTING SUGGESTIONS                          *copilot-keybindings-accept*
+
+Insert mode:
+    <C-CR>      Accept the current suggestion (Ctrl+Enter)
+    <C-j>       Alternative way to accept (Ctrl+J)
+
+Note: Tab completion is disabled to avoid conflicts with other plugins.
+
+==============================================================================
+3. NAVIGATION                                   *copilot-keybindings-navigate*
+
+Insert mode:
+    <M-]>       Next suggestion (Alt+])
+    <M-[>       Previous suggestion (Alt+[)
+    <C-e>       Dismiss/cancel current suggestion
+
+==============================================================================
+4. PANEL ACCESS                                    *copilot-keybindings-panel*
+
+Normal mode:
+    <leader>cp  Open Copilot panel
+
+Insert mode:
+    <C-\><C-p>  Open Copilot panel (exits insert mode)
+
+The panel shows multiple suggestions and additional context.
+
+==============================================================================
+5. COMMANDS                                     *copilot-keybindings-commands*
+
+Normal mode:
+    <leader>cs  Trigger new suggestion
+    <leader>cd  Disable Copilot
+    <leader>ce  Enable Copilot
+    <leader>cr  Restart Copilot
+
+Quick reference from vim: :help copilot-keybindings
+
+vim:tw=78:ts=8:ft=help:norl:
