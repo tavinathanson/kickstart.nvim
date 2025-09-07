@@ -47,8 +47,8 @@ return {
     -- Set up which-key group
     local ok, wk = pcall(require, 'which-key')
     if ok then
-      wk.register({
-        ['<leader>c'] = { name = '[C]opilot', _ = 'which_key_ignore' },
+      wk.add({
+        { '<leader>c', group = '[C]opilot' },
       })
     end
     
