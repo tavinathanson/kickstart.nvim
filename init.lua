@@ -298,6 +298,16 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        -- Add hjkl movement reminders for window navigation
+        { '<C-w>', group = 'Window ←↓↑→ (h j k l)' },
+        { '<C-w>h', desc = '← Go Left (h)' },
+        { '<C-w>j', desc = '↓ Go Down (j)' },
+        { '<C-w>k', desc = '↑ Go Up (k)' },
+        { '<C-w>l', desc = '→ Go Right (l)' },
+        { '<C-w>H', desc = '← Move Window Left (H)' },
+        { '<C-w>J', desc = '↓ Move Window Down (J)' },
+        { '<C-w>K', desc = '↑ Move Window Up (K)' },
+        { '<C-w>L', desc = '→ Move Window Right (L)' },
       },
     },
   },
@@ -932,6 +942,7 @@ require('lazy').setup({
         return mode_info .. copilot_indicator
       end
 
+
       -- Refresh statusline when Copilot might have changed state
       vim.api.nvim_create_autocmd('User', {
         pattern = 'CopilotStatusChanged',
@@ -1017,6 +1028,75 @@ require('lazy').setup({
     },
   },
 })
+
+-- HJKL Floating Window Reminder
+-- Create a floating window that shows hjkl movement keys
+local hjkl_win = nil
+local hjkl_buf = nil
+
+local function toggle_hjkl_float()
+  if hjkl_win and vim.api.nvim_win_is_valid(hjkl_win) then
+    vim.api.nvim_win_close(hjkl_win, true)
+    hjkl_win = nil
+    return
+  end
+  
+  -- Create buffer if it doesn't exist
+  if not hjkl_buf or not vim.api.nvim_buf_is_valid(hjkl_buf) then
+    hjkl_buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(hjkl_buf, 0, -1, false, {
+      '     ▲     ',
+      '     K     ',
+      '           ',
+      ' ◀ H   L ▶ ',
+      '           ',
+      '     J     ',
+      '     ▼     '
+    })
+    vim.bo[hjkl_buf].modifiable = false
+    vim.bo[hjkl_buf].filetype = 'hjkl'
+    
+    -- Set up syntax highlighting for the buffer
+    vim.api.nvim_create_autocmd({'BufEnter', 'BufWinEnter'}, {
+      buffer = hjkl_buf,
+      callback = function()
+        vim.cmd([[
+          syntax clear
+          syntax match HjklArrow "[▲▼◀▶]"
+          syntax match HjklKey "[HJKL]"
+          highlight HjklArrow guifg=#7aa2f7 ctermfg=75
+          highlight HjklKey guifg=#c0caf5 gui=bold ctermfg=251 cterm=bold
+        ]])
+      end
+    })
+  end
+  
+  -- Calculate position (bottom right corner)
+  local width = 11
+  local height = 7
+  local row = vim.o.lines - height - 3
+  local col = vim.o.columns - width - 2
+  
+  -- Create floating window with rounded border
+  hjkl_win = vim.api.nvim_open_win(hjkl_buf, false, {
+    relative = 'editor',
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = 'minimal',
+    border = 'rounded',
+  })
+  
+  -- Set window highlights
+  vim.api.nvim_win_set_option(hjkl_win, 'winhl', 'Normal:NormalFloat,FloatBorder:FloatBorder')
+end
+
+-- Create toggle command
+vim.api.nvim_create_user_command('HjklToggle', toggle_hjkl_float, {})
+
+-- Add keymap for toggling the floating reminder
+vim.keymap.set('n', '<leader>tj', toggle_hjkl_float, { desc = '[T]oggle h[j]kl reminder' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
